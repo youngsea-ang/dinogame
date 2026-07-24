@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공룡 점프 게임</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh; display:flex; justify-content:center; align-items:center;
+    background:#ffffff; font-family:"Malgun Gothic", sans-serif; flex-direction:column;
+  }
+  .wrap { text-align:center; }
+  #score { font-size:18px; color:#535353; margin-bottom:10px; letter-spacing:2px; }
+  canvas { border-bottom:2px solid #535353; background:#ffffff; }
+  #message { margin-top:14px; font-size:16px; color:#535353; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="score">SCORE: 0</div>
+  <canvas id="game" width="800" height="200"></canvas>
+  <div id="message">스페이스바 또는 ↑ 를 눌러 시작 / 점프하세요</div>
+</div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+const scoreEl = document.getElementById("score");
+const messageEl = document.getElementById("message");
+const GROUND_Y = 160;
+
+const dino = { x:50, y:GROUND_Y-40, width:40, height:40, vy:0, jumping:false };
+const GRAVITY = 0.6;
+const JUMP_FORCE = -11;
+
+let obstacles = [];
+let frame = 0;
+let score = 0;
+let gameSpeed = 6;
+let gameOver = false;
+let started = false;
+let nextObstacleFrame = 0;
+
+function randomObstacleGap() {
+  return 60 + Math.floor(Math.random() * 90);
+}
+
+function resetGame() {
+  dino.y = GROUND_Y - 40; dino.vy = 0; dino.jumping = false;
+  obstacles = []; frame = 0; score = 0; gameSpeed = 6; gameOver = false; started = true;
+  nextObstacleFrame = randomObstacleGap();
+  messageEl.textContent = "";
+}
+
+function jump() {
+  if (!started || gameOver) { resetGame(); return; }
+  if (!dino.jumping) { dino.vy = JUMP_FORCE; dino.jumping = true; }
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Space" || e.code === "ArrowUp") { e.preventDefault(); jump(); }
+});
+canvas.addEventListener("mousedown", jump);
+
+function spawnObstacle() {
+  const height = 30 + Math.random() * 20;
+  obstacles.push({ x:canvas.width, y:GROUND_Y-height, width:18, height:height });
+}
+
+function update() {
+  if (!started || gameOver) return;
+  frame++;
+
+  dino.vy += GRAVITY;
+  dino.y += dino.vy;
+  if (dino.y > GROUND_Y - dino.height) {
+    dino.y = GROUND_Y - dino.height; dino.vy = 0; dino.jumping = false;
+  }
+
+  if (frame >= nextObstacleFrame) {
+    spawnObstacle();
+    nextObstacleFrame = frame + randomObstacleGap();
+  }
+
+  obstacles.forEach(o => o.x -= gameSpeed);
+  obstacles = obstacles.filter(o => o.x + o.width > 0);
+
+  for (const o of obstacles) {
+    if (dino.x < o.x+o.width && dino.x+dino.width > o.x &&
+        dino.y < o.y+o.height && dino.y+dino.height > o.y) {
+      gameOver = true;
+      messageEl.textContent = "게임 오버! 스페이스바를 눌러 다시 시작하세요";
+    }
+  }
+
+  score++;
+  if (score % 500 === 0) gameSpeed += 0.5;
+  scoreEl.textContent = "SCORE: " + Math.floor(score / 10);
+}
+
+function drawDino() {
+  const pattern = [
+    "00111100","01111110","01111111","01111100","01111100",
+    "11111100","11111100","01100110","01100110","01100110"
+  ];
+  const cols = 8, rows = pattern.length;
+  const pixelW = dino.width / cols, pixelH = dino.height / rows;
+  ctx.fillStyle = "#535353";
+  for (let r=0; r<rows; r++)
+    for (let c=0; c<cols; c++)
+      if (pattern[r][c] === "1")
+        ctx.fillRect(dino.x + c*pixelW, dino.y + r*pixelH, pixelW, pixelH);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = "#535353";
+  ctx.beginPath(); ctx.moveTo(0, GROUND_Y); ctx.lineTo(canvas.width, GROUND_Y); ctx.stroke();
+
+  drawDino();
+
+  ctx.fillStyle = "#535353";
+  obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.width, o.height));
+
+  if (!started) {
+    ctx.fillStyle = "#535353"; ctx.font = "16px Malgun Gothic";
+    ctx.fillText("스페이스바를 눌러 시작", canvas.width/2 - 80, canvas.height/2);
+  }
+}
+
+function loop() { update(); draw(); requestAnimationFrame(loop); }
+loop();
+</script>
+</body>
+</html>

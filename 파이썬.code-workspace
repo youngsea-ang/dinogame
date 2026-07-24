@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../Users/young/OneDrive/Desktop/파이썬"
+		}
+	],
+	"settings": {
+		"github.copilot.chat.agent.autoFix": true,
+		"terminal.integrated.initialHintCopilotCli": true
+	}
+}
