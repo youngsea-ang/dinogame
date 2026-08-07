@@ -110,3 +110,19 @@ if started and not game_over:   #게임이 시작됐고(started) 아직 안 끝�
             game_speed += 0.5
 
 
+#화면 그리기
+screen.fill(WHITE)
+pygame.draw.line(screen, GRAY, (0, GROUND_Y), (WIDTH, GROUND_Y), 2) #바닥선을 그림
+pygame.draw.rect(screen, GRAY, (dino_x, dino_y, dino_width, dino_height))   #공룡과 장애물들을 회색 사각형으로 그림
+for o in obstacles:
+    pygame.draw.rect(screen, GRAY, o)
+    score_text = font.render(f"SCORE: {score // 10}", True, GRAY)   #font.render(...)는 글자를 이미지로 그려서 만들어주는 함수
+    screen.blit(score_text, (10, 10))
+    if not started:
+        msg = font.render("스페이스바를 눌러 시작", True, GRAY)
+        screen.blit(msg, (WIDTH // 2 - 80, HEIGHT // 2))    #creen.blit(...)는 그 이미지를 화면의 특정 위치에 "붙이는" 함수. 게임 시작 전이면 "눌러서 시작" 문구를, 게임 오버 상태면 "재시작" 문구를 보여줌
+    elif game_over:
+        msg = font.render("게임 오버! 스페이스바를 눌러 재시작", True, GRAY)
+        screen.blit(msg, (WIDTH // 2 - 120, HEIGHT // 2))
+    pygame.display.update() #지금까지 그린 걸 실제 화면에 반영
+    clock.tick(60)  #1초에 60번만 반복하도록 속도를 맞춤
