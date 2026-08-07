@@ -75,4 +75,12 @@ def spawn_obstacle():   #pygame.Rect(...)로 사각형 하나(가로 18, 세로�
     height = random.randint(30, 50)
     obstacles.append(pygame.Rect(WIDTH, GROUND_Y - height, 18, height))
 
-
+#게임 루프
+running = True  #running = True로 시작해서 while running:이 이 값이 True인 동안 계속 반복
+while running:
+    for event in pygame.event.get():    #pygame.event.get()은 그 순간까지 발생한 모든 사건(창 닫기, 키보드 입력 등)을 목록으로 가져옴
+        if event.type == pygame.QUIT:   #event.type == pygame.QUIT는 사용자가 창의 X 버튼을 눌렀다는 뜻이라 running을 False로 바꿔서 반복문을 곧 멈추게 함
+            running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key in (pygame.K_SPACE, pygame.K_UP):  #pygame.K_SPACE나 pygame.K_UP(스페이스바, ↑ 키)를 눌렀으면 jump() 함수를 실행
+                jump()
