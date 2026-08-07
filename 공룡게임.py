@@ -68,3 +68,11 @@ def jump():
     if not jumping:
         dino_vy = JUMP_FORCE
         jumping = True
+
+#장애물 생성 함수(높이와 위치)
+def spawn_obstacle():   #pygame.Rect(...)로 사각형 하나(가로 18, 세로는 랜덤 높이)를 만든다. 
+                        #위치는 WIDTH(화면 맨 오른쪽 바깥)에서 시작하도록 해서, 마치 오른쪽에서 새로 등장하는 것처럼 보이게 한다. .append(...)로 이 사각형을 obstacles 목록 맨 뒤에 추가
+    height = random.randint(30, 50)
+    obstacles.append(pygame.Rect(WIDTH, GROUND_Y - height, 18, height))
+
+
