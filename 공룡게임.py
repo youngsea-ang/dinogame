@@ -5,8 +5,8 @@ import random
 pygame.init()
 
  # 화면 설정, UI
-WIDTH, HEIGHT = 800, 200
-GROUND_Y = 160  #바닥의 세로 위치
+WIDTH, HEIGHT = 800, 400
+GROUND_Y = 350  #바닥의 세로 위치
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("공룡 점프 게임")
@@ -75,6 +75,39 @@ def spawn_obstacle():   #pygame.Rect(...)로 사각형 하나(가로 18, 세로�
     height = random.randint(30, 50)
     obstacles.append(pygame.Rect(WIDTH, GROUND_Y - height, 18, height))
 
+#공룡을 네모가 아니라 픽셀아트(도트) 모양으로 그리는 함수
+def draw_dino(x, y, w, h):
+    pattern = [   #8칸x10줄짜리 격자에 1과 0으로 공룡 실루엣(머리,몸통,다리)을 표현
+        "00111100",
+        "01111110",
+        "01111111",
+        "01111100",
+        "01111100",
+        "11111100",
+        "11111100",
+        "01100110",
+        "01100110",
+        "01100110",
+    ]
+    cols = 8
+    rows = len(pattern)
+    pixel_w = w / cols
+    pixel_h = h / rows
+    for r in range(rows):
+        for c in range(cols):
+            if pattern[r][c] == "1":
+                pygame.draw.rect(screen, GRAY, (x + c * pixel_w, y + r * pixel_h, pixel_w, pixel_h))
+
+#장애물을 네모가 아니라 선인장 모양으로 그리는 함수 (몸통 + 좌우로 뻗은 팔)
+def draw_cactus(rect):
+    pygame.draw.rect(screen, GRAY, rect)   #몸통(세로로 긴 기둥)
+    arm_w = max(int(rect.width * 0.6), 4)
+    arm_h = max(int(rect.height * 0.28), 4)
+    #왼쪽 팔
+    pygame.draw.rect(screen, GRAY, (rect.x - arm_w + 4, rect.y + int(rect.height * 0.35), arm_w, arm_h))
+    #오른쪽 팔
+    pygame.draw.rect(screen, GRAY, (rect.right - 4, rect.y + int(rect.height * 0.15), arm_w, arm_h))
+
 #게임 루프
 running = True  #running = True로 시작해서 while running:이 이 값이 True인 동안 계속 반복
 while running:
@@ -85,9 +118,8 @@ while running:
             if event.key in (pygame.K_SPACE, pygame.K_UP):  #pygame.K_SPACE나 pygame.K_UP(스페이스바, ↑ 키)를 눌렀으면 jump() 함수를 실행
                 jump()
 
-
-#메인 루프 물리계산
-if started and not game_over:   #게임이 시작됐고(started) 아직 안 끝났을 때만(not game_over) 이 블록이 실행
+    #메인 루프 물리계산
+    if started and not game_over:   #게임이 시작됐고(started) 아직 안 끝났을 때만(not game_over) 이 블록이 실행
         frame += 1
         dino_vy += GRAVITY  #dino_vy += GRAVITY, dino_y += dino_vy: 매 프레임 중력을 속도에 더하고, 그 속도만큼 위치를 바꿔서 자연스럽게 떨어지게 함
         dino_y += dino_vy
@@ -109,13 +141,12 @@ if started and not game_over:   #게임이 시작됐고(started) 아직 안 끝�
         if score % 500 == 0:
             game_speed += 0.5
 
-
-#화면 그리기
-screen.fill(WHITE)
-pygame.draw.line(screen, GRAY, (0, GROUND_Y), (WIDTH, GROUND_Y), 2) #바닥선을 그림
-pygame.draw.rect(screen, GRAY, (dino_x, dino_y, dino_width, dino_height))   #공룡과 장애물들을 회색 사각형으로 그림
-for o in obstacles:
-    pygame.draw.rect(screen, GRAY, o)
+    #화면 그리기
+    screen.fill(WHITE)
+    pygame.draw.line(screen, GRAY, (0, GROUND_Y), (WIDTH, GROUND_Y), 2) #바닥선을 그림
+    draw_dino(dino_x, dino_y, dino_width, dino_height)   #공룡을 픽셀아트 모양으로 그림
+    for o in obstacles:
+        draw_cactus(o)   #장애물을 선인장 모양으로 그림
     score_text = font.render(f"SCORE: {score // 10}", True, GRAY)   #font.render(...)는 글자를 이미지로 그려서 만들어주는 함수
     screen.blit(score_text, (10, 10))
     if not started:
