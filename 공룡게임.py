@@ -58,4 +58,13 @@ def reset_game():
     started = True
     next_obstacle_frame = random_obstacle_gap()
 
-    
+#점프 함수
+def jump():
+    global dino_vy, jumping
+    if not started or game_over:    #만약 아직 게임을 시작 안 했거나(not started) 게임 오버 상태라면, reset_game()을 불러서 새로 시작하고 함수를 바로 끝낸다(return)
+                                    #그게 아니고 게임이 진행 중이면서 아직 점프 중이 아니라면(not jumping), 세로 속도를 JUMP_FORCE(위 방향)로 바꿔서 튀어 오르게 하고, jumping을 True로 바꿔요(중복 점프 방지)
+        reset_game()
+        return
+    if not jumping:
+        dino_vy = JUMP_FORCE
+        jumping = True
