@@ -35,3 +35,10 @@ score = 0
 game_speed = 6  #장애물이 움직이는 속도
 game_over = False   #게임이 끝났는지를 나타내는 참/거짓 값
 started = False     #게임이 시작됐는지를 나타내는 참/거짓 값
+
+#글씨체 설정
+font = pygame.font.SysFont("malgungothic", 20)  #malgungothic은 맑은 고딕. 20은 글자 크기
+
+#장애물 생성을 랜덤으로 결정하는 함수
+def random_obstacle_gap():
+    return random.randint(60, 150)
