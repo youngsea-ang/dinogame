@@ -84,3 +84,29 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key in (pygame.K_SPACE, pygame.K_UP):  #pygame.K_SPACE나 pygame.K_UP(스페이스바, ↑ 키)를 눌렀으면 jump() 함수를 실행
                 jump()
+
+
+#메인 루프 물리계산
+if started and not game_over:   #게임이 시작됐고(started) 아직 안 끝났을 때만(not game_over) 이 블록이 실행
+        frame += 1
+        dino_vy += GRAVITY  #dino_vy += GRAVITY, dino_y += dino_vy: 매 프레임 중력을 속도에 더하고, 그 속도만큼 위치를 바꿔서 자연스럽게 떨어지게 함
+        dino_y += dino_vy
+        if dino_y > GROUND_Y - dino_height: #공룡이 바닥보다 더 내려가려 하면 바닥 위치로 딱 고정하고 속도를 0으로, 점프 상태를 해제
+            dino_y = GROUND_Y - dino_height
+            dino_vy = 0
+            jumping = False
+        if frame >= next_obstacle_frame:    #정해둔 랜덤 시점이 되면 장애물을 만들고 다음 랜덤 시점을 새로 뽑음
+            spawn_obstacle()
+            next_obstacle_frame = frame + random_obstacle_gap()
+        for o in obstacles: #모든 장애물을 왼쪽으로 이동시킴(공룡이 앞으로 달리는 것처럼 보이게)
+            o.x -= game_speed
+        obstacles = [o for o in obstacles if o.right > 0]   #화면 왼쪽 밖으로 완전히 사라진 장애물은 목록에서 제거(안 지우면 계속 쌓여서 느려짐)
+        dino_rect = pygame.Rect(dino_x, dino_y, dino_width, dino_height)
+        for o in obstacles:
+            if dino_rect.colliderect(o):    #공룡 사각형과 장애물 사각형이 겹치는지 확인. 겹치면 게임 오버로 바꿈
+                game_over = True
+        score += 1  #매 프레임 점수를 1씩 올리고, 500점마다 속도를 0.5씩 빠르게 함
+        if score % 500 == 0:
+            game_speed += 0.5
+
+
