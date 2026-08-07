@@ -42,3 +42,20 @@ font = pygame.font.SysFont("malgungothic", 20)  #malgungothic은 맑은 고딕. 
 #장애물 생성을 랜덤으로 결정하는 함수
 def random_obstacle_gap():
     return random.randint(60, 150)
+
+#공룡 위치, 장애물 목록, 점수, 속도 등 모든 걸 처음 상태로 되돌려서 게임을 새로 시작하게 해줌
+def reset_game():
+    global dino_y, dino_vy, jumping, obstacles, frame, score
+    global game_speed, game_over, started, next_obstacle_frame
+    dino_y = GROUND_Y - dino_height
+    dino_vy = 0
+    jumping = False
+    obstacles = []
+    frame = 0
+    score = 0
+    game_speed = 6
+    game_over = False
+    started = True
+    next_obstacle_frame = random_obstacle_gap()
+
+    
