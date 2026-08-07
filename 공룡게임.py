@@ -126,3 +126,7 @@ for o in obstacles:
         screen.blit(msg, (WIDTH // 2 - 120, HEIGHT // 2))
     pygame.display.update() #지금까지 그린 걸 실제 화면에 반영
     clock.tick(60)  #1초에 60번만 반복하도록 속도를 맞춤
+
+#게임 종료
+pygame.quit()
+sys.exit()
