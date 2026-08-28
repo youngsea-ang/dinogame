@@ -1,6 +1,7 @@
 # 🦖 Dino Game
 
 > 파이썬으로 만든 구글 공룡 게임
+"https://youngsea-ang.github.io/dinogame/"
 
 <img src="./game.png" width="700">
 
