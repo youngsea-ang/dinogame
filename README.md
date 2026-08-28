@@ -2,7 +2,7 @@
 
 > 파이썬으로 만든 구글 공룡 게임
 
-<img src="C:\구글 공룡 게임\image game.png"width="700">
+<img src="./game.png" width="700">
 
 ## 🎮 게임 소개
 
