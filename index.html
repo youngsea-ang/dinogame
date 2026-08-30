@@ -168,7 +168,7 @@ function updateDino(){
 function dinoRect(){
   const d=state.dino;
   if(d.ducking&&!d.jumping){const s=spriteSize(imgs.duck[d.duckAnim],38);return {x:d.x,y:GROUND_Y-s.h,w:s.w,h:s.h};}
-  const s=spriteSize(imgs.dino[d.anim],50);return {x:d.x,y:GROUND_Y-s.h,w:s.w,h:s.h};
+  const s=spriteSize(imgs.dino[d.anim],50);return {x:d.x,y:d.y,w:s.w,h:s.h};
 }
 function rectsHit(a,b){const pad=4;return a.x+pad<b.x+b.w-pad && a.x+a.w-pad>b.x+pad && a.y+pad<b.y+b.h-pad && a.y+a.h-pad>b.y+pad;}
 function update(t){
@@ -210,7 +210,7 @@ function draw(){
   // obstacles behind score, in front of ground
   for(const o of state.obstacles){const img=o.kind==='ptero'?imgs.ptero[o.anim]:(o.kind==='small'?imgs.cactus.small:imgs.cactus.large);const h=o.kind==='ptero'?38:(o.kind==='small'?40:55);drawScaled(img,o.x,o.y,h);}
   const d=state.dino;let di;
-  if(d.ducking&&!d.jumping){di=imgs.duck[d.duckAnim];const s=spriteSize(di,38);ctx.drawImage(di,d.x,GROUND_Y-s.h,s.w,s.h);} else {di=imgs.dino[state.intro?state.dino.anim:state.dino.anim];const s=spriteSize(di,50);ctx.drawImage(di,d.x,state.intro?d.y:GROUND_Y-s.h,s.w,s.h);}
+  if(d.ducking&&!d.jumping){di=imgs.duck[d.duckAnim];const s=spriteSize(di,38);ctx.drawImage(di,d.x,GROUND_Y-s.h,s.w,s.h);} else {di=imgs.dino[state.intro?state.dino.anim:state.dino.anim];const s=spriteSize(di,50);ctx.drawImage(di,d.x,d.y,s.w,s.h);}
   ctx.fillStyle='#555';ctx.font='20px monospace';ctx.textAlign='right';ctx.fillText(`HI ${String(state.high).padStart(5,'0')} ${String(displayScore()).padStart(5,'0')}`,W-18,28);
   ctx.textAlign='left';
   if(!state.started&&!state.intro){ctx.textAlign='center';ctx.font='30px monospace';ctx.fillText('GAME OVER',W/2,190);ctx.font='16px sans-serif';ctx.fillText('스페이스바를 눌러 시작',W/2,222);}
