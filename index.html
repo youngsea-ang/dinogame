@@ -154,7 +154,7 @@ function spawn(){
 
 function setDuck(on){if(state.gameOver)return;state.dino.ducking=on;}
 function jump(){
-  if(state.gameOver){resetState();state.started=true;state.intro=false;return;}
+  if(state.gameOver){resetState();state.started=true;state.intro=false;state.dino.x=50;return;}
   if(!state.started){state.started=true;state.intro=false;}
   if(!state.dino.jumping && !state.dino.ducking){state.dino.vy=JUMP_FORCE;state.dino.jumping=true;play('jump');}
 }
@@ -229,7 +229,7 @@ async function init(){
 
 document.getElementById('startBtn').addEventListener('click',()=>{
   document.getElementById('home').style.display='none';document.getElementById('gameWrap').style.display='block';
-  state.started=true;state.intro=false;state.gameOver=false;state.obstacles=[];state.scoreFrames=0;state.nextSpawn=100;state.nextPoint=100;
+  state.started=true;state.intro=false;state.gameOver=false;state.obstacles=[];state.scoreFrames=0;state.nextSpawn=100;state.nextPoint=100;state.dino.x=50;
   cancelAnimationFrame(raf);running=true;lastT=performance.now();draw();raf=requestAnimationFrame(update);gameCanvas.focus();
   // pre-open sounds after user click; actual play happens on game events
   Object.values(sounds).forEach(a=>{a.load();});
